@@ -1,0 +1,32 @@
+[
+  {
+    "id": "high-protein-meal",
+    "title": "What makes a meal high-protein",
+    "text": "A meal is generally considered high-protein when it provides at least 20-25 grams of protein per serving. Good sources include chicken breast, fish, eggs, Greek yogurt, tofu, lentils, and beans. High-protein meals help with satiety and muscle maintenance, which is especially useful for meal prep since they tend to keep you full for longer between meals."
+  },
+  {
+    "id": "sodium-guidelines",
+    "title": "Sodium guidelines for a healthy meal",
+    "text": "Most health guidelines recommend keeping daily sodium intake under about 2,300mg, which works out to roughly 500-700mg per meal if eating three meals a day. Processed and packaged foods are the biggest source of excess sodium — a single serving of a heavily processed meal can easily exceed 1,000mg. Cooking from whole ingredients at home is one of the most reliable ways to control sodium intake."
+  },
+  {
+    "id": "what-nutri-score-means",
+    "title": "What Nutri-Score means",
+    "text": "Nutri-Score is a front-of-pack nutrition label that grades food from A (healthiest) to E (least healthy) based on a formula that weighs negative factors (calories, sugar, saturated fat, sodium) against positive factors (fiber, protein, fruit/vegetable content). A grade of A or B generally indicates a more balanced nutritional profile, while D or E often signals a highly processed or energy-dense food that should be eaten in moderation rather than as a staple."
+  },
+  {
+    "id": "fiber-importance",
+    "title": "Why fiber matters in a balanced meal",
+    "text": "Dietary fiber, found in vegetables, whole grains, legumes, and fruit, supports digestion, helps regulate blood sugar, and contributes to feeling full after eating. Most adults benefit from getting at least 25-30 grams of fiber per day, but the average diet falls well short of that. Pairing a starchy base like rice or pasta with a fiber-rich vegetable is a simple way to boost the fiber content of any meal."
+  },
+  {
+    "id": "ultra-processed-foods",
+    "title": "Understanding NOVA processing groups",
+    "text": "The NOVA classification groups foods into four categories by how processed they are: 1) unprocessed or minimally processed foods like fresh vegetables and plain meat, 2) processed culinary ingredients like oils and salt, 3) processed foods like canned vegetables or fresh bread, and 4) ultra-processed foods like packaged snacks, sugary drinks, and instant meals, which typically contain additives and ingredients not found in a home kitchen. Diets higher in NOVA group 4 foods are associated with worse health outcomes, so favoring groups 1-3 when possible is generally recommended."
+  },
+  {
+    "id": "batch-cooking-basics",
+    "title": "The basics of batch cooking for meal prep",
+    "text": "Batch cooking works best when you build meals from three components: a protein, a grain or starch, and a vegetable, each cooked in bulk separately and combined at serving time. This mix-and-match approach avoids the boredom of eating the exact same meal all week while still saving time. Cooling food quickly before refrigerating, using airtight containers, and portioning into single-serving sizes are the habits that make batch-cooked food actually taste good several days later."
+  }
+]
