@@ -1,14 +1,11 @@
-import { ComingSoon } from "@/components/ComingSoon";
+import { DiscoverClient } from "@/components/DiscoverClient";
 
-export const metadata = { title: "Discover — PantryChef" };
+export const metadata = {
+  title: "Discover recipes — PantryChef",
+  description:
+    "Tell PantryChef what ingredients you have and find matching recipes and cooking tutorial videos.",
+};
 
 export default function DiscoverPage() {
-  return (
-    <ComingSoon
-      icon="🎥"
-      title="Discover recipes"
-      description="Type in the ingredients you have and PantryChef will find matching recipes and cooking tutorial videos, complete with a health score for each."
-      milestone="Milestone 2"
-    />
-  );
+  return <DiscoverClient />;
 }
