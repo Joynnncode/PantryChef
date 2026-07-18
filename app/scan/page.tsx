@@ -1,14 +1,11 @@
-import { ComingSoon } from "@/components/ComingSoon";
+import { ScanClient } from "@/components/ScanClient";
 
-export const metadata = { title: "Scan — PantryChef" };
+export const metadata = {
+  title: "Scan a product — PantryChef",
+  description:
+    "Check a packaged ingredient's Nutri-Score, NOVA group, and additives using open nutrition data.",
+};
 
 export default function ScanPage() {
-  return (
-    <ComingSoon
-      icon="🔍"
-      title="Scan a product"
-      description="Look up a packaged ingredient by barcode or name to see its Nutri-Score, ingredient list, and additives using open nutrition data."
-      milestone="Milestone 3"
-    />
-  );
+  return <ScanClient />;
 }
