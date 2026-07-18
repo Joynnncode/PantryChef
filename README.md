@@ -21,7 +21,7 @@ Next.js (App Router) + TypeScript + Tailwind CSS, deployed to Vercel:
 - **Recipes:** [Spoonacular](https://spoonacular.com/food-api) (`lib/apis/spoonacular.ts`)
 - **Videos:** [YouTube Data API v3](https://developers.google.com/youtube/v3) (`lib/apis/youtube.ts`)
 - **Product scanning:** [Open Food Facts](https://world.openfoodfacts.org/) (`lib/apis/openFoodFacts.ts`), no API key required
-- **RAG:** local ONNX embeddings via [`@huggingface/transformers`](https://github.com/huggingface/transformers.js) (MiniLM-L6-v2, no API key, no per-call cost) + brute-force cosine similarity over a small JSON index — no vector database needed at this scale
+- **RAG:** embeddings via [Google's Generative AI API](https://ai.google.dev/gemini-api/docs/embeddings) (`gemini-embedding-001`, free tier — see below) + brute-force cosine similarity over a small JSON index — no vector database needed at this scale. (Local ONNX embeddings were tried first but dropped: `onnxruntime-node`'s native binary isn't available in Vercel's serverless runtime.)
 - **LLM:** [Vercel AI SDK](https://sdk.vercel.ai/) with a pluggable provider (`lib/llm/client.ts`) — see below
 - **Tests:** [Vitest](https://vitest.dev/), covering the pure health-score and similarity-search logic
 
@@ -42,7 +42,8 @@ git clone <this-repo-url>
 cd mealguidance
 npm install
 cp .env.example .env.local
-# fill in at least YOUTUBE_API_KEY, SPOONACULAR_API_KEY, and GROQ_API_KEY (all free) in .env.local
+# fill in at least YOUTUBE_API_KEY, SPOONACULAR_API_KEY, GROQ_API_KEY, and
+# GOOGLE_GENERATIVE_AI_API_KEY (all free) in .env.local
 npm run ingest   # builds the RAG knowledge base — data/kb/embeddings.json is already committed, but re-run after editing content/
 npm run dev
 ```
@@ -56,6 +57,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `YOUTUBE_API_KEY` | [Google Cloud Console](https://console.cloud.google.com/) → enable "YouTube Data API v3" → Credentials | ~100 searches/day |
 | `SPOONACULAR_API_KEY` | [spoonacular.com/food-api](https://spoonacular.com/food-api) | ~150 points/day |
 | `GROQ_API_KEY` | [console.groq.com](https://console.groq.com/) | generous free tier |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) | 10M tokens/min free |
 | Open Food Facts | no key needed | — |
 
 ### A note on free-tier quotas
@@ -88,7 +90,7 @@ components/            # UI primitives (components/ui/) + feature components
 lib/
   apis/                 # typed, cached fetch wrappers for Spoonacular / YouTube / Open Food Facts
   health-score/    # pure Nutri-Score-inspired grading function (+ tests)
-  embeddings/        # local embedding model + cosine similarity (+ tests)
+  embeddings/        # hosted embedding model client + cosine similarity (+ tests)
   rag/                    # retrieval + generation over the knowledge base
   llm/                    # pluggable LLM provider client + prompts
   content/              # Meal Prep MDX parsing

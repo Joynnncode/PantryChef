@@ -1,31 +1,20 @@
-import { pipeline, type FeatureExtractionPipeline } from "@huggingface/transformers";
+import { google } from "@ai-sdk/google";
+import { embed, embedMany } from "ai";
 
-const MODEL_ID = "Xenova/all-MiniLM-L6-v2";
-
-// Loading the ONNX model is expensive (tens of MB), so we keep a single
-// pipeline instance per server process instead of reloading it per request.
-// This runs fully locally — no API key, no per-call cost.
-let pipelinePromise: Promise<FeatureExtractionPipeline> | null = null;
-
-function getPipeline(): Promise<FeatureExtractionPipeline> {
-  if (!pipelinePromise) {
-    pipelinePromise = pipeline("feature-extraction", MODEL_ID);
-  }
-  return pipelinePromise;
-}
+// Embeddings run via Google's free-tier Generative AI embedding API rather
+// than a local ONNX model: transformers.js's onnxruntime-node dependency
+// needs a native libonnxruntime.so.1 binary that isn't available in
+// Vercel's serverless Node.js runtime, which made local embeddings crash
+// in production. This keeps the "zero marginal cost" property (Google's
+// free tier is generous — 10M tokens/min) without the native-binary problem.
+const EMBEDDING_MODEL = google.embedding("gemini-embedding-001");
 
 export async function embedText(text: string): Promise<number[]> {
-  const extractor = await getPipeline();
-  const output = await extractor(text, { pooling: "mean", normalize: true });
-  return Array.from(output.data as Float32Array);
+  const { embedding } = await embed({ model: EMBEDDING_MODEL, value: text });
+  return embedding;
 }
 
 export async function embedTexts(texts: string[]): Promise<number[][]> {
-  const extractor = await getPipeline();
-  const results: number[][] = [];
-  for (const text of texts) {
-    const output = await extractor(text, { pooling: "mean", normalize: true });
-    results.push(Array.from(output.data as Float32Array));
-  }
-  return results;
+  const { embeddings } = await embedMany({ model: EMBEDDING_MODEL, values: texts });
+  return embeddings;
 }

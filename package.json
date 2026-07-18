@@ -9,13 +9,13 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "ingest": "tsx scripts/ingest.ts"
+    "ingest": "node --env-file=.env.local ./node_modules/.bin/tsx scripts/ingest.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.16",
+    "@ai-sdk/google": "^4.0.18",
     "@ai-sdk/groq": "^4.0.12",
     "@ai-sdk/openai": "^4.0.16",
-    "@huggingface/transformers": "^4.2.0",
     "ai": "^7.0.31",
     "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",

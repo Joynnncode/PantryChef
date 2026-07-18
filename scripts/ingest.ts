@@ -53,7 +53,7 @@ async function buildChunks(): Promise<Array<{ id: string; text: string; metadata
 async function main() {
   console.log("Building knowledge base chunks...");
   const chunks = await buildChunks();
-  console.log(`Found ${chunks.length} chunks. Embedding locally (this may take a moment)...`);
+  console.log(`Found ${chunks.length} chunks. Requesting embeddings (this may take a moment)...`);
 
   const kb: KBChunk[] = [];
   for (const chunk of chunks) {
