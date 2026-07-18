@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useSearchParams } from "next/navigation";
 import { ChatMessage, type ChatMessageData } from "@/components/ChatMessage";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -14,9 +15,12 @@ const SUGGESTIONS = [
 ];
 
 export function AskClient() {
+  const searchParams = useSearchParams();
+  const prefilledQuestion = searchParams.get("q") ?? "";
+
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [messages, setMessages] = useState<ChatMessageData[]>([]);
-  const [draft, setDraft] = useState("");
+  const [draft, setDraft] = useState(prefilledQuestion);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);

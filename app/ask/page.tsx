@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { AskClient } from "@/components/AskClient";
 
 export const metadata = {
@@ -7,5 +8,9 @@ export const metadata = {
 };
 
 export default function AskPage() {
-  return <AskClient />;
+  return (
+    <Suspense>
+      <AskClient />
+    </Suspense>
+  );
 }

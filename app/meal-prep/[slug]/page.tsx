@@ -3,6 +3,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllMealPrepEntries, getMealPrepEntry } from "@/lib/content/mealPrep";
 import { Badge } from "@/components/ui/Badge";
 import { Card, CardBody } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 
 export function generateStaticParams() {
   return getAllMealPrepEntries().map((entry) => ({ slug: entry.slug }));
@@ -77,6 +78,18 @@ export default async function MealPrepDetailPage({
       <article className="prose prose-slate max-w-none prose-headings:text-foreground prose-p:text-foreground-muted prose-li:text-foreground-muted prose-strong:text-foreground">
         <MDXRemote source={entry.content} />
       </article>
+
+      <div className="mt-10 border-t border-border pt-6">
+        <p className="mb-3 text-sm text-foreground-muted">
+          Have a more specific question about {entry.title.toLowerCase()}?
+        </p>
+        <Button
+          href={`/ask?q=${encodeURIComponent(`How do I meal prep ${entry.title.toLowerCase()}?`)}`}
+          variant="secondary"
+        >
+          Ask PantryChef
+        </Button>
+      </div>
     </div>
   );
 }

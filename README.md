@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PantryChef
 
-## Getting Started
+Cook with what you already have. Tell PantryChef your ingredients and it finds recipes and cooking tutorial videos, scores how healthy each meal is, helps you check packaged ingredients, and answers cooking questions in plain language — grounded in a retrieval-augmented (RAG) knowledge base.
 
-First, run the development server:
+Live demo: _not yet deployed — see [Deploying](#deploying) below._
+
+## Features
+
+- **Discover** — find recipes and YouTube tutorials ranked by how many of your ingredients they use ([`/discover`](app/discover/page.tsx)).
+- **Ask PantryChef** — a RAG-powered chat that answers cooking and nutrition questions, grounded in a local knowledge base of meal-prep guides and nutrition facts, with cited sources ([`/ask`](app/ask/page.tsx)).
+- **Scan** — look up a packaged product by barcode or name and see its Nutri-Score, NOVA processing group, and additives, via the open [Open Food Facts](https://world.openfoodfacts.org/) database ([`/scan`](app/scan/page.tsx)).
+- **Health scoring** — every recipe gets an explainable A–E grade from a Nutri-Score-inspired formula over its nutrition facts ([`lib/health-score/nutriScore.ts`](lib/health-score/nutriScore.ts)).
+- **Meal Prep guide** — a curated, MDX-driven collection of ingredients and meals that hold up well for batch cooking ([`/meal-prep`](app/meal-prep/page.tsx)).
+
+No accounts — ingredients and favorites are stored in your browser (`localStorage`) only.
+
+## Tech stack
+
+Next.js (App Router) + TypeScript + Tailwind CSS, deployed to Vercel:
+
+- **Recipes:** [Spoonacular](https://spoonacular.com/food-api) (`lib/apis/spoonacular.ts`)
+- **Videos:** [YouTube Data API v3](https://developers.google.com/youtube/v3) (`lib/apis/youtube.ts`)
+- **Product scanning:** [Open Food Facts](https://world.openfoodfacts.org/) (`lib/apis/openFoodFacts.ts`), no API key required
+- **RAG:** local ONNX embeddings via [`@huggingface/transformers`](https://github.com/huggingface/transformers.js) (MiniLM-L6-v2, no API key, no per-call cost) + brute-force cosine similarity over a small JSON index — no vector database needed at this scale
+- **LLM:** [Vercel AI SDK](https://sdk.vercel.ai/) with a pluggable provider (`lib/llm/client.ts`) — see below
+- **Tests:** [Vitest](https://vitest.dev/), covering the pure health-score and similarity-search logic
+
+## Why the LLM provider is swappable
+
+`LLM_PROVIDER` picks the provider at runtime with zero code changes — this matters because a publicly shared demo link could otherwise run up the deployer's API bill from strangers' usage:
+
+- **`groq`** (default) — free tier, safe for a public demo.
+- **`anthropic`** — for a higher-quality personal demo (e.g. Claude).
+- **`openai`** — also supported.
+
+If you clone this repo, bring your own key for whichever provider you choose (see `.env.example`) — your usage, your bill, isolated from anyone else running their own copy.
+
+## Getting started
 
 ```bash
+git clone <this-repo-url>
+cd mealguidance
+npm install
+cp .env.example .env.local
+# fill in at least YOUTUBE_API_KEY, SPOONACULAR_API_KEY, and GROQ_API_KEY (all free) in .env.local
+npm run ingest   # builds the RAG knowledge base — data/kb/embeddings.json is already committed, but re-run after editing content/
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Getting free API keys
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Where to get it | Free tier |
+|---|---|---|
+| `YOUTUBE_API_KEY` | [Google Cloud Console](https://console.cloud.google.com/) → enable "YouTube Data API v3" → Credentials | ~100 searches/day |
+| `SPOONACULAR_API_KEY` | [spoonacular.com/food-api](https://spoonacular.com/food-api) | ~150 points/day |
+| `GROQ_API_KEY` | [console.groq.com](https://console.groq.com/) | generous free tier |
+| Open Food Facts | no key needed | — |
 
-## Learn More
+### A note on free-tier quotas
 
-To learn more about Next.js, take a look at the following resources:
+YouTube (~100 searches/day) and Spoonacular (~150 points/day) both have small free quotas. Results are cached aggressively (7–30 day TTLs) to stretch them as far as possible, and the app degrades gracefully — e.g. if the YouTube quota is exhausted, recipe results still show without videos rather than erroring out. If you fork this for real traffic, request a quota increase from Google early (it takes a few days to approve).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run dev         # start the dev server
+npm run build        # production build
+npm run lint          # ESLint
+npm run typecheck  # tsc --noEmit
+npm run test          # Vitest
+npm run ingest       # rebuild the RAG knowledge base from content/
+```
 
-## Deploy on Vercel
+## Deploying
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Push this repo to your own GitHub account.
+2. Import it into [Vercel](https://vercel.com/new).
+3. Add the environment variables from `.env.example` in the Vercel project settings.
+4. Deploy — `data/kb/embeddings.json` is committed, so no build-time ingest step is required.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project structure
+
+```
+app/                  # Next.js App Router pages + API routes (proxy every external API call)
+components/            # UI primitives (components/ui/) + feature components
+lib/
+  apis/                 # typed, cached fetch wrappers for Spoonacular / YouTube / Open Food Facts
+  health-score/    # pure Nutri-Score-inspired grading function (+ tests)
+  embeddings/        # local embedding model + cosine similarity (+ tests)
+  rag/                    # retrieval + generation over the knowledge base
+  llm/                    # pluggable LLM provider client + prompts
+  content/              # Meal Prep MDX parsing
+  storage/             # localStorage helpers (no backend user data)
+content/meal-prep/*.mdx   # curated Meal Prep articles — add a file here to add an entry
+content/nutrition-knowledge.json  # hand-authored nutrition facts fed into the RAG index
+scripts/ingest.ts     # builds data/kb/embeddings.json from content/
+data/kb/embeddings.json  # generated RAG index (committed so a fresh clone works immediately)
+```
+
+## License
+
+MIT — see [LICENSE](LICENSE).
