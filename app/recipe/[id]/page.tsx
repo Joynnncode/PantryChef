@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getRecipeDetail } from "@/lib/apis/spoonacular";
 import { Card, CardBody } from "@/components/ui/Card";
 import { FavoriteButton } from "@/components/FavoriteButton";
+import { HealthGradeBadge } from "@/components/HealthGradeBadge";
 
 export async function generateMetadata({
   params,
@@ -64,7 +65,9 @@ export default async function RecipeDetailPage({
       {recipe.nutritionPerServing && (
         <Card className="my-8">
           <CardBody>
-            <h2 className="mb-3 text-sm font-semibold uppercase text-foreground-muted">
+            <HealthGradeBadge nutrition={recipe.nutritionPerServing} />
+
+            <h2 className="mt-6 mb-3 text-sm font-semibold uppercase text-foreground-muted">
               Nutrition per serving
             </h2>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
