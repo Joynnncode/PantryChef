@@ -1,0 +1,77 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+:root {
+  /* Brand: light-blue primary scale */
+  --color-primary-50: #f0f9ff;
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-300: #7dd3fc;
+  --color-primary-400: #38bdf8;
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+  --color-primary-800: #075985;
+  --color-primary-900: #0c4a6e;
+
+  /* Health grade accents */
+  --color-grade-a: #16a34a;
+  --color-grade-b: #84cc16;
+  --color-grade-c: #eab308;
+  --color-grade-d: #f97316;
+  --color-grade-e: #dc2626;
+
+  /* Surfaces */
+  --background: #f7fbfd;
+  --surface: #ffffff;
+  --surface-muted: var(--color-primary-50);
+  --foreground: #0f172a;
+  --foreground-muted: #475569;
+  --border-color: var(--color-primary-100);
+}
+
+@theme inline {
+  --color-primary-50: var(--color-primary-50);
+  --color-primary-100: var(--color-primary-100);
+  --color-primary-200: var(--color-primary-200);
+  --color-primary-300: var(--color-primary-300);
+  --color-primary-400: var(--color-primary-400);
+  --color-primary-500: var(--color-primary-500);
+  --color-primary-600: var(--color-primary-600);
+  --color-primary-700: var(--color-primary-700);
+  --color-primary-800: var(--color-primary-800);
+  --color-primary-900: var(--color-primary-900);
+
+  --color-grade-a: var(--color-grade-a);
+  --color-grade-b: var(--color-grade-b);
+  --color-grade-c: var(--color-grade-c);
+  --color-grade-d: var(--color-grade-d);
+  --color-grade-e: var(--color-grade-e);
+
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-border: var(--border-color);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0b1520;
+    --surface: #101d2b;
+    --surface-muted: #14243590;
+    --foreground: #e7f2fb;
+    --foreground-muted: #9db3c7;
+    --border-color: #1e3548;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
