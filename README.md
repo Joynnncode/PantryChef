@@ -2,7 +2,7 @@
 
 Cook with what you already have. Tell PantryChef your ingredients and it finds recipes and cooking tutorial videos, scores how healthy each meal is, helps you check packaged ingredients, and answers cooking questions in plain language — grounded in a retrieval-augmented (RAG) knowledge base.
 
-Live demo: _not yet deployed — see [Deploying](#deploying) below._
+Live demo: **[mealguidance.vercel.app](https://mealguidance.vercel.app)**
 
 ## Features
 
