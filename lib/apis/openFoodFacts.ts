@@ -7,15 +7,27 @@ const CACHE_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
 
 export type NutriScoreGrade = "a" | "b" | "c" | "d" | "e";
 
+export interface NutrimentsPer100g {
+  caloriesKcal: number | null;
+  sugarG: number | null;
+  saturatedFatG: number | null;
+  sodiumMg: number | null;
+  fiberG: number | null;
+  proteinG: number | null;
+}
+
 export interface FoodProduct {
   barcode: string;
   name: string;
+  brand: string | null;
+  quantity: string | null;
   imageUrl: string | null;
   nutriScoreGrade: NutriScoreGrade | null;
   novaGroup: number | null;
   ingredientsText: string | null;
   additives: string[];
   allergens: string[];
+  nutrimentsPer100g: NutrimentsPer100g | null;
 }
 
 function userAgent(): string {
@@ -32,12 +44,32 @@ function isNutriScoreGrade(value: unknown): value is NutriScoreGrade {
 interface RawProduct {
   code: string;
   product_name?: string;
+  brands?: string;
+  quantity?: string;
   image_url?: string;
   nutriscore_grade?: string;
   nova_group?: number;
   ingredients_text?: string;
   additives_tags?: string[];
   allergens_tags?: string[];
+  nutriments?: Record<string, number>;
+}
+
+function normalizeNutriments(nutriments?: Record<string, number>): NutrimentsPer100g | null {
+  if (!nutriments) return null;
+
+  // Open Food Facts reports sodium in grams per 100g; the health-score
+  // formula elsewhere in the app works in mg, so convert here for consistency.
+  const sodiumG = nutriments["sodium_100g"];
+
+  return {
+    caloriesKcal: nutriments["energy-kcal_100g"] ?? null,
+    sugarG: nutriments["sugars_100g"] ?? null,
+    saturatedFatG: nutriments["saturated-fat_100g"] ?? null,
+    sodiumMg: typeof sodiumG === "number" ? sodiumG * 1000 : null,
+    fiberG: nutriments["fiber_100g"] ?? null,
+    proteinG: nutriments["proteins_100g"] ?? null,
+  };
 }
 
 function normalizeProduct(raw: RawProduct): FoodProduct {
@@ -45,12 +77,15 @@ function normalizeProduct(raw: RawProduct): FoodProduct {
   return {
     barcode: raw.code,
     name: raw.product_name || "Unknown product",
+    brand: raw.brands || null,
+    quantity: raw.quantity || null,
     imageUrl: raw.image_url ?? null,
     nutriScoreGrade: isNutriScoreGrade(grade) ? grade : null,
     novaGroup: raw.nova_group ?? null,
     ingredientsText: raw.ingredients_text || null,
     additives: (raw.additives_tags ?? []).map((tag) => tag.replace(/^en:/, "")),
     allergens: (raw.allergens_tags ?? []).map((tag) => tag.replace(/^en:/, "")),
+    nutrimentsPer100g: normalizeNutriments(raw.nutriments),
   };
 }
 
