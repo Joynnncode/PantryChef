@@ -1,7 +1,18 @@
 const KEYS = {
   ingredients: "pantrychef:ingredients",
   favorites: "pantrychef:favorites",
+  scanHistory: "pantrychef:scan-history",
 } as const;
+
+const SCAN_HISTORY_LIMIT = 50;
+
+export interface ScanHistoryEntry {
+  barcode: string;
+  name: string;
+  imageUrl: string | null;
+  nutriScoreGrade: string | null;
+  scannedAt: number;
+}
 
 function readJSON<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -37,4 +48,24 @@ export function toggleFavoriteRecipeId(id: number): number[] {
     : [...current, id];
   writeJSON(KEYS.favorites, next);
   return next;
+}
+
+export function getScanHistory(): ScanHistoryEntry[] {
+  return readJSON<ScanHistoryEntry[]>(KEYS.scanHistory, []);
+}
+
+export function addScanHistoryEntry(
+  entry: Omit<ScanHistoryEntry, "scannedAt">
+): ScanHistoryEntry[] {
+  const current = getScanHistory().filter((e) => e.barcode !== entry.barcode);
+  const next = [{ ...entry, scannedAt: Date.now() }, ...current].slice(
+    0,
+    SCAN_HISTORY_LIMIT
+  );
+  writeJSON(KEYS.scanHistory, next);
+  return next;
+}
+
+export function clearScanHistory(): void {
+  writeJSON(KEYS.scanHistory, []);
 }

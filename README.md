@@ -12,7 +12,7 @@ Live demo: **[mealguidance.vercel.app](https://mealguidance.vercel.app)**
 - **Health scoring** — every recipe gets an explainable A–E grade from a Nutri-Score-inspired formula over its nutrition facts ([`lib/health-score/nutriScore.ts`](lib/health-score/nutriScore.ts)).
 - **Meal Prep guide** — a curated, MDX-driven collection of ingredients and meals that hold up well for batch cooking ([`/meal-prep`](app/meal-prep/page.tsx)).
 
-No accounts — ingredients and favorites are stored in your browser (`localStorage`) only.
+No accounts — ingredients, favorites, and scan history are stored in your browser (`localStorage`) only.
 
 ## Tech stack
 

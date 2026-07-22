@@ -1,11 +1,18 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
 import { ProductCard } from "@/components/ProductCard";
 import { BarcodeCameraScanner } from "@/components/BarcodeCameraScanner";
+import { ScanHistoryList } from "@/components/ScanHistoryList";
+import {
+  addScanHistoryEntry,
+  clearScanHistory,
+  getScanHistory,
+  type ScanHistoryEntry,
+} from "@/lib/storage/localStore";
 import type { FoodProduct } from "@/lib/apis/openFoodFacts";
 
 const BARCODE_PATTERN = /^\d{8,14}$/;
@@ -17,6 +24,14 @@ export function ScanClient() {
   const [searched, setSearched] = useState(false);
   const [products, setProducts] = useState<FoodProduct[]>([]);
   const [cameraOpen, setCameraOpen] = useState(false);
+  const [history, setHistory] = useState<ScanHistoryEntry[]>([]);
+
+  useEffect(() => {
+    // localStorage is only readable client-side; syncing here (rather than
+    // in a lazy useState initializer) avoids an SSR/client hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setHistory(getScanHistory());
+  }, []);
 
   async function runLookup(value: string) {
     const trimmed = value.trim();
@@ -38,6 +53,16 @@ export function ScanClient() {
       if (isBarcode) {
         const data: { product: FoodProduct | null } = await res.json();
         setProducts(data.product ? [data.product] : []);
+        if (data.product) {
+          setHistory(
+            addScanHistoryEntry({
+              barcode: data.product.barcode,
+              name: data.product.name,
+              imageUrl: data.product.imageUrl,
+              nutriScoreGrade: data.product.nutriScoreGrade,
+            })
+          );
+        }
       } else {
         const data: { products: FoodProduct[] } = await res.json();
         setProducts(data.products);
@@ -48,6 +73,11 @@ export function ScanClient() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleClearHistory() {
+    clearScanHistory();
+    setHistory([]);
   }
 
   function handleSubmit(e: FormEvent) {
@@ -122,6 +152,8 @@ export function ScanClient() {
           ))}
         </div>
       )}
+
+      <ScanHistoryList entries={history} onClear={handleClearHistory} />
     </div>
   );
 }
