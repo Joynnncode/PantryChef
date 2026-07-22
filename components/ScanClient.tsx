@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
 import { ProductCard } from "@/components/ProductCard";
+import { BarcodeCameraScanner } from "@/components/BarcodeCameraScanner";
 import type { FoodProduct } from "@/lib/apis/openFoodFacts";
 
 const BARCODE_PATTERN = /^\d{8,14}$/;
@@ -15,10 +16,10 @@ export function ScanClient() {
   const [error, setError] = useState<string | null>(null);
   const [searched, setSearched] = useState(false);
   const [products, setProducts] = useState<FoodProduct[]>([]);
+  const [cameraOpen, setCameraOpen] = useState(false);
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    const trimmed = query.trim();
+  async function runLookup(value: string) {
+    const trimmed = value.trim();
     if (!trimmed) return;
 
     setLoading(true);
@@ -49,6 +50,17 @@ export function ScanClient() {
     }
   }
 
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    runLookup(query);
+  }
+
+  function handleDetected(barcode: string) {
+    setCameraOpen(false);
+    setQuery(barcode);
+    runLookup(barcode);
+  }
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-10">
       <div className="mb-8">
@@ -60,17 +72,32 @@ export function ScanClient() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex gap-2">
+      <form onSubmit={handleSubmit} className="flex flex-wrap gap-2">
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Barcode (e.g. 3017620422003) or product name"
           aria-label="Barcode or product name"
+          className="min-w-0 flex-1"
         />
         <Button type="submit" disabled={loading || !query.trim()}>
           {loading ? "Searching…" : "Scan"}
         </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => setCameraOpen((open) => !open)}
+        >
+          📷 {cameraOpen ? "Close camera" : "Scan with camera"}
+        </Button>
       </form>
+
+      {cameraOpen && (
+        <BarcodeCameraScanner
+          onDetected={handleDetected}
+          onClose={() => setCameraOpen(false)}
+        />
+      )}
 
       {loading && (
         <div className="mt-8 flex items-center gap-2 text-foreground-muted">

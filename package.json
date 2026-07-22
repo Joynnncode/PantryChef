@@ -16,6 +16,8 @@
     "@ai-sdk/google": "^4.0.18",
     "@ai-sdk/groq": "^4.0.12",
     "@ai-sdk/openai": "^4.0.16",
+    "@zxing/browser": "^0.2.1",
+    "@zxing/library": "^0.23.0",
     "ai": "^7.0.31",
     "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
