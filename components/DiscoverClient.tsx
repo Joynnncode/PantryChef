@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { IngredientInput } from "@/components/IngredientInput";
 import { RecipeCard } from "@/components/RecipeCard";
 import { YouTubeEmbed } from "@/components/YouTubeEmbed";
@@ -10,6 +11,9 @@ import type { RecipeSummary } from "@/lib/apis/spoonacular";
 import type { VideoResult } from "@/lib/apis/youtube";
 
 export function DiscoverClient() {
+  const searchParams = useSearchParams();
+  const ingredientToAdd = searchParams.get("add")?.trim().toLowerCase();
+
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [recipes, setRecipes] = useState<RecipeSummary[] | null>(null);
   const [videos, setVideos] = useState<VideoResult[]>([]);
@@ -20,8 +24,15 @@ export function DiscoverClient() {
   useEffect(() => {
     // localStorage is only readable client-side; syncing here (rather than
     // in a lazy useState initializer) avoids an SSR/client hydration mismatch.
+    const saved = getSavedIngredients();
+    const merged =
+      ingredientToAdd && !saved.includes(ingredientToAdd)
+        ? [...saved, ingredientToAdd]
+        : saved;
+    if (merged !== saved) saveIngredients(merged);
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIngredients(getSavedIngredients());
+    setIngredients(merged);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleSubmit(ingredients: string[]) {

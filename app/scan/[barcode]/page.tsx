@@ -3,6 +3,7 @@ import { getProductByBarcode } from "@/lib/apis/openFoodFacts";
 import { Card, CardBody } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { GradePill } from "@/components/ui/GradePill";
+import { Button } from "@/components/ui/Button";
 
 const NOVA_LABELS: Record<number, string> = {
   1: "Unprocessed / minimally processed",
@@ -94,6 +95,15 @@ export default async function ProductDetailPage({
               NOVA {product.novaGroup} — {NOVA_LABELS[product.novaGroup]}
             </p>
           )}
+
+          <Button
+            href={`/discover?add=${encodeURIComponent(product.name)}`}
+            variant="secondary"
+            size="sm"
+            className="mt-4"
+          >
+            🍳 Find recipes with this
+          </Button>
         </div>
       </div>
 
