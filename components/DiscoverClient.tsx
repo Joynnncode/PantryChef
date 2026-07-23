@@ -5,8 +5,14 @@ import { useSearchParams } from "next/navigation";
 import { IngredientInput } from "@/components/IngredientInput";
 import { RecipeCard } from "@/components/RecipeCard";
 import { YouTubeEmbed } from "@/components/YouTubeEmbed";
+import { ScannedProductPicker } from "@/components/ScannedProductPicker";
 import { Spinner } from "@/components/ui/Spinner";
-import { getSavedIngredients, saveIngredients } from "@/lib/storage/localStore";
+import {
+  getSavedIngredients,
+  getScanHistory,
+  saveIngredients,
+  type ScanHistoryEntry,
+} from "@/lib/storage/localStore";
 import type { RecipeSummary } from "@/lib/apis/spoonacular";
 import type { VideoResult } from "@/lib/apis/youtube";
 
@@ -15,6 +21,7 @@ export function DiscoverClient() {
   const ingredientToAdd = searchParams.get("add")?.trim().toLowerCase();
 
   const [ingredients, setIngredients] = useState<string[]>([]);
+  const [scanHistory, setScanHistory] = useState<ScanHistoryEntry[]>([]);
   const [recipes, setRecipes] = useState<RecipeSummary[] | null>(null);
   const [videos, setVideos] = useState<VideoResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -32,8 +39,17 @@ export function DiscoverClient() {
     if (merged !== saved) saveIngredients(merged);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setIngredients(merged);
+    setScanHistory(getScanHistory());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function toggleIngredientFromScan(name: string) {
+    const next = ingredients.includes(name)
+      ? ingredients.filter((i) => i !== name)
+      : [...ingredients, name];
+    setIngredients(next);
+    saveIngredients(next);
+  }
 
   async function handleSubmit(ingredients: string[]) {
     saveIngredients(ingredients);
@@ -78,6 +94,12 @@ export function DiscoverClient() {
           many of your ingredients they use, plus tutorial videos.
         </p>
       </div>
+
+      <ScannedProductPicker
+        entries={scanHistory}
+        selectedIngredients={ingredients}
+        onToggle={toggleIngredientFromScan}
+      />
 
       <IngredientInput
         ingredients={ingredients}
