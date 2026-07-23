@@ -4,7 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils/cn";
 import type { ScanHistoryEntry } from "@/lib/storage/localStore";
 
-const PREVIEW_COUNT = 6;
+const PREVIEW_COUNT = 2;
 
 export function ScannedProductPicker({
   entries,
