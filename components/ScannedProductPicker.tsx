@@ -1,5 +1,10 @@
+"use client";
+
+import { useState } from "react";
 import { cn } from "@/lib/utils/cn";
 import type { ScanHistoryEntry } from "@/lib/storage/localStore";
+
+const PREVIEW_COUNT = 6;
 
 export function ScannedProductPicker({
   entries,
@@ -10,15 +15,31 @@ export function ScannedProductPicker({
   selectedIngredients: string[];
   onToggle: (name: string) => void;
 }) {
+  const [expanded, setExpanded] = useState(false);
+
   if (entries.length === 0) return null;
+
+  const hasMore = entries.length > PREVIEW_COUNT;
+  const visibleEntries = expanded ? entries : entries.slice(0, PREVIEW_COUNT);
 
   return (
     <div className="mb-6">
-      <h2 className="mb-2 text-sm font-semibold uppercase text-foreground-muted">
-        From your scans
-      </h2>
+      <div className="mb-2 flex items-center justify-between">
+        <h2 className="text-sm font-semibold uppercase text-foreground-muted">
+          From your scans
+        </h2>
+        {hasMore && (
+          <button
+            type="button"
+            onClick={() => setExpanded((v) => !v)}
+            className="text-xs font-medium text-primary-600 hover:underline"
+          >
+            {expanded ? "Show less" : `Show all (${entries.length})`}
+          </button>
+        )}
+      </div>
       <div className="flex flex-wrap gap-2">
-        {entries.map((entry) => {
+        {visibleEntries.map((entry) => {
           const normalized = entry.name.trim().toLowerCase();
           const active = selectedIngredients.includes(normalized);
           return (
