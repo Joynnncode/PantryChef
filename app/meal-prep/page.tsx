@@ -2,6 +2,7 @@ import { getAllMealPrepEntries } from "@/lib/content/mealPrep";
 import { getAllMealPlanEntries } from "@/lib/content/mealPlans";
 import { MealPrepBrowser } from "@/components/MealPrepBrowser";
 import { MealPlanCard } from "@/components/MealPlanCard";
+import { Button } from "@/components/ui/Button";
 
 export const metadata = {
   title: "Meal Prep Guide — PantryChef",
@@ -15,13 +16,18 @@ export default function MealPrepPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-10">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold text-foreground">Meal Prep Guide</h1>
-        <p className="mt-2 max-w-2xl text-foreground-muted">
-          A curated collection of ingredients and meals that hold up well for batch
-          cooking — how long they keep, how to store them, and how to reheat them
-          without losing quality.
-        </p>
+      <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-foreground">Meal Prep Guide</h1>
+          <p className="mt-2 max-w-2xl text-foreground-muted">
+            A curated collection of ingredients and meals that hold up well for batch
+            cooking — how long they keep, how to store them, and how to reheat them
+            without losing quality.
+          </p>
+        </div>
+        <Button href="/meal-prep/mine" variant="secondary" size="sm">
+          📸 My meal preps
+        </Button>
       </div>
 
       <div className="mb-12">
