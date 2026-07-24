@@ -22,6 +22,17 @@ export function MealPrepCard({ entry }: { entry: MealPrepFrontmatter }) {
                 Freezer {entry.storageDurationDays.freezer}d
               </span>
             )}
+            {entry.mealType && (
+              <span className="rounded-full bg-surface-muted px-2 py-1 capitalize">
+                {entry.mealType}
+              </span>
+            )}
+            {entry.nutritionPerServing && (
+              <span className="rounded-full bg-surface-muted px-2 py-1">
+                {entry.nutritionPerServing.calories} kcal ·{" "}
+                {entry.nutritionPerServing.proteinG}g protein
+              </span>
+            )}
           </div>
         </CardBody>
       </Card>

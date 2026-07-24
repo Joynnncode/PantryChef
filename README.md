@@ -10,7 +10,7 @@ Live demo: **[mealguidance.vercel.app](https://mealguidance.vercel.app)**
 - **Ask PantryChef** — a RAG-powered chat that answers cooking and nutrition questions, grounded in a local knowledge base of meal-prep guides and nutrition facts, with cited sources ([`/ask`](app/ask/page.tsx)).
 - **Scan** — point your phone's camera at a barcode (or type it in) to see a product's Nutri-Score, NOVA processing group, and additives, via the open [Open Food Facts](https://world.openfoodfacts.org/) database ([`/scan`](app/scan/page.tsx)). Camera scanning runs entirely in the browser via [ZXing](https://github.com/zxing-js/library) — no app install required. Works well for European users specifically: Nutri-Score and NOVA are EU nutrition standards, and the scanner reads EAN-13 (the standard European barcode format) out of the box. Ingredient text is shown in whatever language the product was originally logged in on Open Food Facts (not auto-translated).
 - **Health scoring** — every recipe gets an explainable A–E grade from a Nutri-Score-inspired formula over its nutrition facts ([`lib/health-score/nutriScore.ts`](lib/health-score/nutriScore.ts)).
-- **Meal Prep guide** — a curated, MDX-driven collection of ingredients and meals that hold up well for batch cooking ([`/meal-prep`](app/meal-prep/page.tsx)).
+- **Meal Prep guide** — a curated, MDX-driven collection of ingredients, ready-to-eat combo meals, and full weekly plans ([`/meal-prep`](app/meal-prep/page.tsx)). Combo meals (e.g. avocado-egg pita, chicken & rice power bowls) include an ingredient list and assembly steps, not just storage tips, filterable by type (protein, grain, vegetable, sauce, combo). Weekly plans (`/meal-prep/plans/[slug]`) bundle those into five-day rotations — a **Balanced Week** and a higher-protein, lower-calorie **Cutting Week** — each with a day-by-day breakfast/lunch/dinner/snack breakdown, calorie/protein targets, and a grocery list.
 
 No accounts — ingredients, favorites, and scan history are stored in your browser (`localStorage`) only.
 
@@ -93,9 +93,10 @@ lib/
   embeddings/        # hosted embedding model client + cosine similarity (+ tests)
   rag/                    # retrieval + generation over the knowledge base
   llm/                    # pluggable LLM provider client + prompts
-  content/              # Meal Prep MDX parsing
+  content/              # Meal Prep + Meal Plan MDX parsing
   storage/             # localStorage helpers (no backend user data)
-content/meal-prep/*.mdx   # curated Meal Prep articles — add a file here to add an entry
+content/meal-prep/*.mdx   # curated Meal Prep entries (components + combo meals) — add a file here to add one
+content/meal-plans/*.mdx  # curated weekly plans that reference meal-prep slugs — add a file here to add one
 content/nutrition-knowledge.json  # hand-authored nutrition facts fed into the RAG index
 scripts/ingest.ts     # builds data/kb/embeddings.json from content/
 data/kb/embeddings.json  # generated RAG index (committed so a fresh clone works immediately)

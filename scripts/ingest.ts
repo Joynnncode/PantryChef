@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { getAllMealPrepEntries } from "../lib/content/mealPrep";
+import { getAllMealPlanEntries } from "../lib/content/mealPlans";
 import { embedText } from "../lib/embeddings/embed";
 import type { KBChunk } from "../lib/rag/types";
 
@@ -28,6 +29,30 @@ async function buildChunks(): Promise<Array<{ id: string; text: string; metadata
         type: "meal-prep",
         title: entry.title,
         url: `/meal-prep/${entry.slug}`,
+      },
+    });
+  }
+
+  for (const plan of getAllMealPlanEntries()) {
+    const dayLines = plan.days
+      .map(
+        (day) =>
+          `${day.day}: ${day.meals.map((meal) => `${meal.slot} - ${meal.label}`).join("; ")}`
+      )
+      .join("\n");
+    chunks.push({
+      id: `meal-plan:${plan.slug}`,
+      text: [
+        plan.title,
+        plan.summary,
+        `Daily calorie target: ${plan.dailyCalorieTarget}. Protein focus: ${plan.proteinFocus}.`,
+        dayLines,
+        plan.content,
+      ].join("\n\n"),
+      metadata: {
+        type: "meal-prep",
+        title: plan.title,
+        url: `/meal-prep/plans/${plan.slug}`,
       },
     });
   }

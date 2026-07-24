@@ -34,7 +34,7 @@ export default async function MealPrepDetailPage({
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-10">
-      <div className="mb-6 flex items-center gap-2">
+      <div className="mb-6 flex flex-wrap items-center gap-2">
         <Badge className="capitalize">{entry.category.replace("-", " ")}</Badge>
         {entry.tags.map((tag) => (
           <Badge key={tag} className="bg-surface-muted text-foreground-muted">
@@ -74,6 +74,36 @@ export default async function MealPrepDetailPage({
           </div>
         </CardBody>
       </Card>
+
+      {entry.nutritionPerServing && (
+        <p className="mb-8 text-sm text-foreground-muted">
+          <span className="font-semibold text-foreground">Per serving:</span>{" "}
+          {entry.nutritionPerServing.calories} kcal ·{" "}
+          {entry.nutritionPerServing.proteinG}g protein
+        </p>
+      )}
+
+      {entry.ingredients && entry.ingredients.length > 0 && (
+        <div className="mb-8">
+          <h2 className="mb-3 text-lg font-semibold text-foreground">Ingredients</h2>
+          <ul className="list-disc space-y-1 pl-5 text-foreground-muted">
+            {entry.ingredients.map((ingredient) => (
+              <li key={ingredient}>{ingredient}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {entry.assemblySteps && entry.assemblySteps.length > 0 && (
+        <div className="mb-8">
+          <h2 className="mb-3 text-lg font-semibold text-foreground">How to assemble</h2>
+          <ol className="list-decimal space-y-2 pl-5 text-foreground-muted">
+            {entry.assemblySteps.map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+          </ol>
+        </div>
+      )}
 
       <article className="prose prose-slate max-w-none prose-headings:text-foreground prose-p:text-foreground-muted prose-li:text-foreground-muted prose-strong:text-foreground">
         <MDXRemote source={entry.content} />

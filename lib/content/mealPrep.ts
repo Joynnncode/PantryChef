@@ -7,7 +7,10 @@ export type MealPrepCategory =
   | "grain"
   | "vegetable"
   | "full-meal"
-  | "sauce-condiment";
+  | "sauce-condiment"
+  | "combo";
+
+export type MealType = "breakfast" | "lunch" | "dinner" | "snack";
 
 export interface MealPrepFrontmatter {
   title: string;
@@ -19,6 +22,13 @@ export interface MealPrepFrontmatter {
   whyGoodForPrep: string;
   relatedRecipeIds?: number[];
   image?: string;
+  // Combo-meal fields: an assembled, ready-to-eat meal built from a few
+  // components (e.g. avocado-egg mix + pita + sauce), as opposed to a single
+  // batch-cooked ingredient like rice or chicken.
+  mealType?: MealType;
+  ingredients?: string[];
+  assemblySteps?: string[];
+  nutritionPerServing?: { calories: number; proteinG: number };
 }
 
 export interface MealPrepEntry extends MealPrepFrontmatter {
