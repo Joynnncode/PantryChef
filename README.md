@@ -6,9 +6,9 @@ Live demo: **[mealguidance.vercel.app](https://mealguidance.vercel.app)**
 
 ## Demo
 
-<video src="pantrychef-demo.mp4" controls width="720">
-  Your browser doesn't support inline video — <a href="pantrychef-demo.mp4">download the demo video</a>.
-</video>
+[![Watch the demo video](demo-thumbnail.png)](pantrychef-demo.mp4)
+
+*(GitHub doesn't inline-embed video from repo files — click the thumbnail to play it.)*
 
 ## Features
 
