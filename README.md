@@ -4,6 +4,12 @@ Cook with what you already have. Tell PantryChef your ingredients and it finds r
 
 Live demo: **[mealguidance.vercel.app](https://mealguidance.vercel.app)**
 
+## Demo
+
+<video src="pantrychef-demo.mp4" controls width="720">
+  Your browser doesn't support inline video — <a href="pantrychef-demo.mp4">download the demo video</a>.
+</video>
+
 ## Features
 
 - **Discover** — find recipes and YouTube tutorials ranked by how many of your ingredients they use ([`/discover`](app/discover/page.tsx)). Scanned products link in two ways: a "Find recipes with this" button on the product detail page, and a "From your scans" picker right on the Discover page — tap-to-add/remove chips for your scan history, collapsed to the 2 most recent with a "Show all" toggle so it doesn't crowd out the rest of the page.
