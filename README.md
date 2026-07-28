@@ -4,6 +4,8 @@ Cook with what you already have. Tell PantryChef your ingredients and it finds r
 
 Live demo: **[mealguidance.vercel.app](https://mealguidance.vercel.app)**
 
+![Visitors](https://visitor-badge.laobi.icu/badge?page_id=Joynnncode.PantryChef)
+
 ## Demo
 
 [![Watch the demo video](demo-thumbnail.png)](pantrychef-demo.mp4)
