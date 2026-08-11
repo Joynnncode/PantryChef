@@ -2,6 +2,9 @@
   "name": "mealguidance",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,13 +12,19 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "ingest": "node --env-file=.env.local ./node_modules/.bin/tsx scripts/ingest.ts"
+    "ingest": "node --env-file=.env.local ./node_modules/.bin/tsx scripts/ingest.ts",
+    "eval": "node --env-file-if-exists=.env.local ./node_modules/.bin/tsx scripts/eval.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.16",
     "@ai-sdk/google": "^4.0.18",
     "@ai-sdk/groq": "^4.0.12",
     "@ai-sdk/openai": "^4.0.16",
+    "@langfuse/client": "^5.10.0",
+    "@langfuse/otel": "^5.10.0",
+    "@langfuse/tracing": "^5.10.0",
+    "@langfuse/vercel-ai-sdk": "^5.10.0",
+    "@opentelemetry/sdk-node": "^0.221.0",
     "@vercel/analytics": "^2.0.1",
     "@zxing/browser": "^0.2.1",
     "@zxing/library": "^0.23.0",
@@ -30,7 +39,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.20",
-    "@types/node": "^20",
+    "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

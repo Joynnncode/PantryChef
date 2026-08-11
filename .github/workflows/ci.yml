@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run build
+
+  eval:
+    runs-on: ubuntu-latest
+    # Needs real LLM/embedding calls, so it only runs when the repo has the
+    # keys configured — skips cleanly on forked PRs, which don't get secrets.
+    if: ${{ secrets.GROQ_API_KEY != '' && secrets.GOOGLE_GENERATIVE_AI_API_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Groq's free tier has a small daily token budget (100k TPD), and one
+      # full eval run costs a meaningful chunk of it — running this on every
+      # PR regardless of what changed would exhaust the quota almost
+      # immediately, so it only runs when RAG-relevant paths change.
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            rag:
+              - 'lib/rag/**'
+              - 'lib/llm/**'
+              - 'lib/embeddings/**'
+              - 'content/**'
+              - 'data/kb/**'
+              - 'evals/**'
+              - 'scripts/eval.ts'
+              - 'scripts/ingest.ts'
+
+      - uses: actions/setup-node@v4
+        if: steps.filter.outputs.rag == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+        if: steps.filter.outputs.rag == 'true'
+
+      - run: npm run eval
+        if: steps.filter.outputs.rag == 'true'
+        env:
+          LLM_PROVIDER: groq
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}

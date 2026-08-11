@@ -1,0 +1,152 @@
+[
+  {
+    "id": "avocado-egg-pita-browning",
+    "question": "How do I keep the avocado egg pita filling from browning in the fridge?",
+    "expectedSourceIds": ["meal-prep:avocado-egg-pita"],
+    "expectedFacts": [["plastic wrap"]]
+  },
+  {
+    "id": "brown-rice-freezing",
+    "question": "What's a good way to freeze brown rice for meal prep?",
+    "expectedSourceIds": ["meal-prep:brown-rice"],
+    "expectedFacts": [["flat"], ["single-portion", "single portion"]]
+  },
+  {
+    "id": "chicken-breast-drying-out",
+    "question": "How do I keep meal-prepped chicken breast from drying out in the fridge?",
+    "expectedSourceIds": ["meal-prep:chicken-breast"],
+    "expectedFacts": [["cooking liquid"]]
+  },
+  {
+    "id": "power-bowl-sauce-separate",
+    "question": "Why should I keep the sauce separate in a chicken and rice power bowl until I eat it?",
+    "expectedSourceIds": ["meal-prep:chicken-rice-power-bowl"],
+    "expectedFacts": [["soggy"]]
+  },
+  {
+    "id": "tahini-sauce-freezing",
+    "question": "Can I freeze the yogurt-tahini sauce to make it last longer?",
+    "expectedSourceIds": ["meal-prep:everyday-yogurt-tahini-sauce"],
+    "expectedFacts": [["doesn't freeze", "does not freeze", "freeze well"]]
+  },
+  {
+    "id": "parfait-protein-comparison",
+    "question": "Does plain or flavored Greek yogurt have more protein for the same calories?",
+    "expectedSourceIds": ["meal-prep:greek-yogurt-protein-parfait"],
+    "expectedFacts": [["plain"], ["double"]]
+  },
+  {
+    "id": "oats-ratio",
+    "question": "What ratio of oats to milk should I use for overnight oats?",
+    "expectedSourceIds": ["meal-prep:overnight-oats"],
+    "expectedFacts": [["1:1", "1 to 1"]]
+  },
+  {
+    "id": "roasted-veg-storage-grouping",
+    "question": "Should I store all roasted vegetables together, or keep firmer and softer ones separate?",
+    "expectedSourceIds": ["meal-prep:roasted-vegetables"],
+    "expectedFacts": [["firmer"], ["softer"]]
+  },
+  {
+    "id": "tuna-wrap-lettuce-fresh",
+    "question": "How do I keep lettuce leaves fresh for tuna lettuce wraps?",
+    "expectedSourceIds": ["meal-prep:tuna-lettuce-wraps"],
+    "expectedFacts": [["paper towel", "paper-towel"]]
+  },
+  {
+    "id": "balanced-week-calories",
+    "question": "What's the daily calorie target for the Balanced Week meal plan?",
+    "expectedSourceIds": ["meal-plan:balanced-week"],
+    "expectedFacts": [["2000"], ["2200"]]
+  },
+  {
+    "id": "balanced-week-protein",
+    "question": "How much protein per day does the Balanced Week plan aim for?",
+    "expectedSourceIds": ["meal-plan:balanced-week"],
+    "expectedFacts": [["90"], ["110"]]
+  },
+  {
+    "id": "cutting-week-calories",
+    "question": "What's the daily calorie target for the Cutting Week plan?",
+    "expectedSourceIds": ["meal-plan:cutting-week"],
+    "expectedFacts": [["1500"], ["1700"]]
+  },
+  {
+    "id": "cutting-week-protein",
+    "question": "What's the daily protein target on the Cutting Week plan?",
+    "expectedSourceIds": ["meal-plan:cutting-week"],
+    "expectedFacts": [["120"], ["140"]]
+  },
+  {
+    "id": "balanced-week-friday",
+    "question": "Why is Friday left open on the Balanced Week meal plan instead of having a fixed meal?",
+    "expectedSourceIds": ["meal-plan:balanced-week"],
+    "expectedFacts": [["buffer"]]
+  },
+  {
+    "id": "cutting-week-mechanism",
+    "question": "What's the actual mechanism behind the Cutting Week plan working, not just eating less?",
+    "expectedSourceIds": ["meal-plan:cutting-week"],
+    "expectedFacts": [["ratio"]]
+  },
+  {
+    "id": "high-protein-threshold",
+    "question": "How many grams of protein per serving makes a meal count as 'high-protein'?",
+    "expectedSourceIds": ["nutrition:high-protein-meal"],
+    "expectedFacts": [["20"], ["25"]]
+  },
+  {
+    "id": "sodium-limit",
+    "question": "What's the recommended daily sodium limit?",
+    "expectedSourceIds": ["nutrition:sodium-guidelines"],
+    "expectedFacts": [["2300", "2,300"]]
+  },
+  {
+    "id": "nutri-score-meaning",
+    "question": "What does a Nutri-Score grade of A mean compared to a grade of E?",
+    "expectedSourceIds": ["nutrition:what-nutri-score-means"],
+    "expectedFacts": [["healthiest", "balanced"], ["least healthy", "processed", "moderation"]]
+  },
+  {
+    "id": "fiber-daily-target",
+    "question": "How many grams of fiber per day should most adults aim for?",
+    "expectedSourceIds": ["nutrition:fiber-importance"],
+    "expectedFacts": [["25"], ["30"]]
+  },
+  {
+    "id": "nova-ultra-processed",
+    "question": "What kinds of foods count as ultra-processed under the NOVA classification?",
+    "expectedSourceIds": ["nutrition:ultra-processed-foods"],
+    "expectedFacts": [["packaged snacks"], ["additives"]]
+  },
+  {
+    "id": "batch-cooking-components",
+    "question": "What three components should a batch-cooked meal-prep meal be built from?",
+    "expectedSourceIds": ["nutrition:batch-cooking-basics"],
+    "expectedFacts": [["protein"], ["grain", "starch"], ["vegetable"]]
+  },
+  {
+    "id": "tahini-whisk-order",
+    "question": "What should I whisk together first when making the yogurt-tahini sauce?",
+    "expectedSourceIds": ["meal-prep:everyday-yogurt-tahini-sauce"],
+    "expectedFacts": [["tahini"], ["lemon juice"]]
+  },
+  {
+    "id": "parfait-freeze-texture",
+    "question": "Why doesn't the Greek yogurt protein parfait freeze well?",
+    "expectedSourceIds": ["meal-prep:greek-yogurt-protein-parfait"],
+    "expectedFacts": [["grainy"]]
+  },
+  {
+    "id": "power-bowl-base-components",
+    "question": "What three already-batch-cooked things does the chicken and rice power bowl combine?",
+    "expectedSourceIds": ["meal-prep:chicken-rice-power-bowl"],
+    "expectedFacts": [["chicken"], ["rice"], ["vegetable"]]
+  },
+  {
+    "id": "roasted-veg-versatility",
+    "question": "Can I eat roasted vegetables cold, or do they need to be reheated?",
+    "expectedSourceIds": ["meal-prep:roasted-vegetables"],
+    "expectedFacts": [["cold"], ["grain bowl"]]
+  }
+]

@@ -33,6 +33,7 @@ Next.js (App Router) + TypeScript + Tailwind CSS, deployed to Vercel:
 - **RAG:** embeddings via [Google's Generative AI API](https://ai.google.dev/gemini-api/docs/embeddings) (`gemini-embedding-001`, free tier — see below) + brute-force cosine similarity over a small JSON index — no vector database needed at this scale. (Local ONNX embeddings were tried first but dropped: `onnxruntime-node`'s native binary isn't available in Vercel's serverless runtime.)
 - **LLM:** [Vercel AI SDK](https://sdk.vercel.ai/) with a pluggable provider (`lib/llm/client.ts`) — see below
 - **Tests:** [Vitest](https://vitest.dev/), covering the pure health-score and similarity-search logic
+- **Observability:** [Langfuse](https://langfuse.com/) (optional, free tier) — traces every RAG request end-to-end (retrieval + generation), giving latency, token cost, and full input/output per call. Wired via `instrumentation.ts`; left unconfigured, tracing is skipped entirely.
 
 ## Why the LLM provider is swappable
 
@@ -73,6 +74,17 @@ Open [http://localhost:3000](http://localhost:3000).
 
 YouTube (~100 searches/day) and Spoonacular (~150 points/day) both have small free quotas. Results are cached aggressively (7–30 day TTLs) to stretch them as far as possible, and the app degrades gracefully — e.g. if the YouTube quota is exhausted, recipe results still show without videos rather than erroring out. If you fork this for real traffic, request a quota increase from Google early (it takes a few days to approve).
 
+Groq's free tier also has a small daily token budget (100k TPD as of writing) — a full `npm run eval` run uses a meaningful chunk of it, which is why the CI eval job (below) only runs when RAG-relevant paths change, not on every PR.
+
+## Evals
+
+`npm run eval` runs [`evals/rag-eval-set.json`](evals/rag-eval-set.json) (25 real questions against the meal-prep/meal-plan/nutrition knowledge base) through the full RAG pipeline and checks two things per question:
+
+- **Retrieval relevance** — does the expected source chunk actually show up in the top-5 retrieved results?
+- **Answer correctness** — does the generated answer contain the expected facts (checked as case-insensitive substrings, with alternate phrasings per fact so paraphrasing doesn't cause a false fail)?
+
+It prints a pass rate for each and exits non-zero if either drops below threshold (90% retrieval / 80% correctness by default, overridable via `EVAL_RETRIEVAL_THRESHOLD` / `EVAL_CORRECTNESS_THRESHOLD`). Wired into CI (`.github/workflows/ci.yml`) as a required check on PRs that touch `lib/rag/`, `lib/llm/`, `lib/embeddings/`, `content/`, or the eval set itself — needs `GROQ_API_KEY` and `GOOGLE_GENERATIVE_AI_API_KEY` set as repo secrets, and skips cleanly if they aren't (e.g. on forked PRs).
+
 ## Scripts
 
 ```bash
@@ -82,6 +94,7 @@ npm run lint          # ESLint
 npm run typecheck  # tsc --noEmit
 npm run test          # Vitest
 npm run ingest       # rebuild the RAG knowledge base from content/
+npm run eval          # run the RAG eval set (retrieval relevance + answer correctness)
 ```
 
 ## Deploying
