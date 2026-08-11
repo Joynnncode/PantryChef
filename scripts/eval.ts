@@ -23,6 +23,13 @@ interface EvalResult {
   error?: string;
 }
 
+// Known limitation: correctness is graded by substring match, not an LLM
+// judge, so a fully correct but differently-worded answer can register as a
+// false fail (seen in practice: the model wrote "paper-towel trick" instead
+// of "paper towel", and "balanced"/"processed" instead of the expected
+// "healthiest"/"least healthy"). expectedFacts supports listing alternate
+// phrasings per fact for exactly this reason — widen the list rather than
+// dropping the check if a real answer trips it.
 const EVAL_SET_PATH = path.join(process.cwd(), "evals", "rag-eval-set.json");
 const RETRIEVAL_K = 5;
 const RETRIEVAL_THRESHOLD = Number(process.env.EVAL_RETRIEVAL_THRESHOLD ?? 0.9);
