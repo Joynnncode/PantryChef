@@ -24,11 +24,24 @@ jobs:
 
   eval:
     runs-on: ubuntu-latest
-    # Needs real LLM/embedding calls, so it only runs when the repo has the
-    # keys configured — skips cleanly on forked PRs, which don't get secrets.
-    if: ${{ secrets.GROQ_API_KEY != '' && secrets.GOOGLE_GENERATIVE_AI_API_KEY != '' }}
     steps:
       - uses: actions/checkout@v4
+
+      # Job-level `if:` can't reference the secrets context directly (GitHub
+      # rejects the whole workflow file at parse time if it does), so the
+      # "do we even have keys" check has to happen in a step instead, where
+      # secrets are only allowed via `env:`.
+      - name: Check for required secrets
+        id: secrets-check
+        run: |
+          if [ -n "$GROQ_API_KEY" ] && [ -n "$GOOGLE_API_KEY" ]; then
+            echo "has-secrets=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-secrets=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
 
       # Groq's free tier has a small daily token budget (100k TPD), and one
       # full eval run costs a meaningful chunk of it — running this on every
@@ -36,6 +49,7 @@ jobs:
       # immediately, so it only runs when RAG-relevant paths change.
       - uses: dorny/paths-filter@v3
         id: filter
+        if: steps.secrets-check.outputs.has-secrets == 'true'
         with:
           filters: |
             rag:
@@ -49,16 +63,16 @@ jobs:
               - 'scripts/ingest.ts'
 
       - uses: actions/setup-node@v4
-        if: steps.filter.outputs.rag == 'true'
+        if: steps.secrets-check.outputs.has-secrets == 'true' && steps.filter.outputs.rag == 'true'
         with:
           node-version: 22
           cache: npm
 
       - run: npm ci
-        if: steps.filter.outputs.rag == 'true'
+        if: steps.secrets-check.outputs.has-secrets == 'true' && steps.filter.outputs.rag == 'true'
 
       - run: npm run eval
-        if: steps.filter.outputs.rag == 'true'
+        if: steps.secrets-check.outputs.has-secrets == 'true' && steps.filter.outputs.rag == 'true'
         env:
           LLM_PROVIDER: groq
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
