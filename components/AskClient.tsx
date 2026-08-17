@@ -50,11 +50,16 @@ export function AskClient() {
         body: JSON.stringify({ question: trimmed, ingredients }),
       });
 
-      const data: { answer?: string; sources?: ChatMessageData["sources"]; error?: string } =
-        await res.json();
+      const data: {
+        answer?: string;
+        sources?: ChatMessageData["sources"];
+        error?: string;
+        detail?: string;
+      } = await res.json();
 
       if (!res.ok || !data.answer) {
-        throw new Error(data.error || "Something went wrong.");
+        const headline = data.error || "Something went wrong.";
+        throw new Error(data.detail ? `${headline} (${data.detail})` : headline);
       }
 
       setMessages((prev) => [
