@@ -15,7 +15,7 @@ export function getLanguageModel(): LanguageModel {
   switch (provider) {
     case "groq": {
       const groq = createGroq({ apiKey: requireKey("GROQ_API_KEY") });
-      return groq(modelId || "llama-3.3-70b-versatile");
+      return groq(modelId || "openai/gpt-oss-120b");
     }
     case "anthropic": {
       const anthropic = createAnthropic({ apiKey: requireKey("ANTHROPIC_API_KEY") });
