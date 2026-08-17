@@ -45,6 +45,28 @@ Next.js (App Router) + TypeScript + Tailwind CSS, deployed to Vercel:
 
 If you clone this repo, bring your own key for whichever provider you choose (see `.env.example`) — your usage, your bill, isolated from anyone else running their own copy.
 
+### When a hosted model disappears
+
+On 2026-08-17 the app started answering every question on `/ask` with "PantryChef couldn't generate an answer right now." Nothing had been deployed for six days. Groq had retired `llama-3.3-70b-versatile`, which had been the default since the feature was built, and the API began returning:
+
+```
+404  The model `llama-3.3-70b-versatile` does not exist or you do not have access to it.
+```
+
+No Llama model remains in Groq's lineup, so the default moved to `openai/gpt-oss-120b` (131k context, the closest replacement). Free hosted inference is the trade here: providers rotate their catalogue without notice, and a working deployment can break with no commit behind it.
+
+Two things this cost more time than it should have, both now fixed:
+
+- **The error was swallowed.** `/api/rag` collapsed every non-config failure into one friendly sentence, so the 404 never reached the browser and finding it meant testing the embedding API and the LLM API by hand. Upstream messages now travel in a `detail` field (key-shaped strings scrubbed first, since `detail` is client-visible).
+- **`LLM_MODEL` lives in four places.** `.env.local`, `.env.example`, the fallback in `lib/llm/client.ts`, and Vercel's own store — where Production, Preview, and Development are each set separately. Fixing the first three left production broken; fixing production left a stale Development value that `vercel env pull` would have silently written back over the local fix.
+
+If `/ask` breaks again, check the model still exists before anything else:
+
+```sh
+curl -s https://api.groq.com/openai/v1/models \
+  -H "Authorization: Bearer $GROQ_API_KEY" | grep -o '"id":"[^"]*"'
+```
+
 ## Getting started
 
 ```bash
